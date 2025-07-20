@@ -27,12 +27,7 @@
 #define NUMDIGITS			  12			// display digit width
 #define BUFSIZE				  100			// display/scroll buffer
 
-#if defined(ARDUINO_NODEMCU)
-// doesn't work yet
-const int Pin_VFD_RESET	=	22;			// VFD _RESET
-const int Pin_VFD_VDON	=	21;			//     _VDON Vdisp 0=ON 1=OFF
-const int Pin_VFD_CS	  =	5;			//     _CS   chip select, SPI SS
-#elif defined(ARDUINO_D1_MINI)
+#if defined(ARDUINO_D1_MINI)
 const int Pin_VFD_RESET	=	5;			// VFD _RESET
 const int Pin_VFD_VDON	=	4;			//     _VDON Vdisp 0=ON 1=OFF
 const int Pin_VFD_CS	  =	SS;			//     _CS   chip select, SPI SS
