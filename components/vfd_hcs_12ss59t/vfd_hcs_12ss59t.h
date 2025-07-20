@@ -30,6 +30,9 @@ class VFDHCS12SS59T : public display::DisplayBuffer {
   void draw_absolute_pixel_internal(int x, int y, Color color) override;
   int get_width() override { return NUMDIGITS * 8; } // 8 pixels per char (example)
   int get_height() override { return 16; } // 16 pixels high (example)
+  display::DisplayType get_display_type() override { return display::DisplayType(); }
+  int get_width_internal() override { return get_width(); }
+  int get_height_internal() override { return get_height(); }
   void set_brightness(float brightness);
 
  protected:
