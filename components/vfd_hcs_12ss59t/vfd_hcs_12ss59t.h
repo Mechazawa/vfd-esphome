@@ -3,6 +3,7 @@
 
 #include "esphome.h"
 #include <SPI.h>
+#include "esphome/components/display/display_buffer.h"
 
 #define SPIPARS 2000000, LSBFIRST, SPI_MODE3
 #define VFD_DCRAM_WR 0x10
@@ -20,16 +21,16 @@
 namespace esphome {
 namespace vfd_hcs_12ss59t {
 
-class VFDHCS12SS59T : public Component {
+class VFDHCS12SS59T : public display::DisplayBuffer {
  public:
-  VFDHCS12SS59T(int pinReset = 5, int pinVdon = 4, int pinCs = 15);
-  void set_pins(int pinReset, int pinVdon, int pinCs);
+  VFDHCS12SS59T(int pinReset, int pinVdon, int pinCs);
   void setup() override;
-  void loop() override;
-  void write(const char* text);
-  void scroll(int16_t mode);
-  void display();
-  void set_brightness(uint8_t brightness);
+  void dump_config() override;
+  void update() override;
+  void draw_absolute_pixel_internal(int x, int y, Color color) override;
+  int get_width() override { return NUMDIGITS * 8; } // 8 pixels per char (example)
+  int get_height() override { return 16; } // 16 pixels high (example)
+  void set_brightness(float brightness);
 
  protected:
   char buf[BUFSIZE];
@@ -39,6 +40,7 @@ class VFDHCS12SS59T : public Component {
   int16_t scrLen;
   int16_t scrPos;
   int16_t scrMode;
+  float brightness_ = 1.0f;
 
   void select(int pin);
   void deSelect(int pin);

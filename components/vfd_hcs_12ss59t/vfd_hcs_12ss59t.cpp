@@ -16,12 +16,6 @@ VFDHCS12SS59T::VFDHCS12SS59T(int pinReset, int pinVdon, int pinCs)
   buf[NUMDIGITS] = '\0';
 }
 
-void VFDHCS12SS59T::set_pins(int pinReset, int pinVdon, int pinCs) {
-  pin_reset = pinReset;
-  pin_vdon = pinVdon;
-  pin_cs = pinCs;
-}
-
 void VFDHCS12SS59T::setup() {
   pinMode(pin_reset, OUTPUT);
   pinMode(pin_vdon, OUTPUT);
@@ -32,22 +26,35 @@ void VFDHCS12SS59T::setup() {
   SPI.begin();
 }
 
-void VFDHCS12SS59T::loop() {
-  // Optionally implement periodic display updates here
+void VFDHCS12SS59T::dump_config() {
+  ESP_LOGCONFIG("vfd_hcs_12ss59t", "VFD HCS-12SS59T Display:");
+  ESP_LOGCONFIG("vfd_hcs_12ss59t", "  Reset Pin: %d", pin_reset);
+  ESP_LOGCONFIG("vfd_hcs_12ss59t", "  Vdon Pin: %d", pin_vdon);
+  ESP_LOGCONFIG("vfd_hcs_12ss59t", "  CS Pin: %d", pin_cs);
+  ESP_LOGCONFIG("vfd_hcs_12ss59t", "  Brightness: %.2f", brightness_);
 }
 
-void VFDHCS12SS59T::display() {
+void VFDHCS12SS59T::update() {
+  // Called by ESPHome to refresh the display
+  this->do_update_();
   SPI.beginTransaction(settingsA);
   select(pin_cs);
   sendCmdSeq(VFD_DCRAM_WR, 0);
-  int16_t p = scrPos;
   for (int16_t i = 0; i < NUMDIGITS; i++) {
-    sendChar(buf[p--]);
-    if (p < 0)
-      p = scrLen - 1;
+    sendChar(buf[i]);
   }
   deSelect(pin_cs);
   SPI.endTransaction();
+}
+
+void VFDHCS12SS59T::draw_absolute_pixel_internal(int x, int y, Color color) {
+  // Not used for character VFD, but required by DisplayBuffer
+}
+
+void VFDHCS12SS59T::set_brightness(float brightness) {
+  brightness_ = brightness;
+  // If the VFD supports brightness via SPI, send the command here
+  // sendCmd(VFD_DUTY, (uint8_t)(brightness_ * 0x0F));
 }
 
 void VFDHCS12SS59T::select(int pin) {
