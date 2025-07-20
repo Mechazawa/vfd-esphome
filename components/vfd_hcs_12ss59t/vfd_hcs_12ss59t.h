@@ -8,9 +8,10 @@
 
 #pragma once
 
-#include "esphome.h"
-#include <SPI.h>
+
 #include "esphome/components/display/display_buffer.h"
+#include "esphome/core/automation.h"
+#include <SPI.h>
 #include "vfd_hcs_12ss59t_action.h"
 
 
@@ -43,7 +44,10 @@ enum class VFDLight : uint8_t {
  * @class VFDHCS12SS59T
  * @brief Driver for Samsung HCS-12SS59T VFD, ESPHome display component
  */
-class VFDHCS12SS59T : public display::DisplayBuffer {
+namespace esphome {
+namespace vfd_hcs_12ss59t {
+
+class VFDHCS12SS59T : public esphome::display::DisplayBuffer {
  public:
   /**
    * @brief Construct a new VFDHCS12SS59T object
@@ -56,7 +60,7 @@ class VFDHCS12SS59T : public display::DisplayBuffer {
   void setup() override;
   void dump_config() override;
   void update() override;
-  void draw_absolute_pixel_internal(int x, int y, Color color) override;
+  void draw_absolute_pixel_internal(int x, int y, esphome::display::Color color) override;
   int get_width() const override { return NUMDIGITS * 8; }  ///< 8 pixels per char
   int get_height() const override { return 16; }            ///< 16 pixels high
   display::DisplayType get_display_type() override { return display::DisplayType(); }
