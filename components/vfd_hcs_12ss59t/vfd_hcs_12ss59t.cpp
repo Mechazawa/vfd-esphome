@@ -44,8 +44,8 @@ void VFDHCS12SS59T::update() {
   SPI.endTransaction();
 }
 
-void VFDHCS12SS59T::draw_absolute_pixel_internal(int, int, Color) {
-  // Not used for character VFD, but required by DisplayBuffer
+void VFDHCS12SS59T::draw_absolute_pixel_internal(int, int, esphome::Color) {
+// Not used for character VFD, but required by DisplayBuffer
 }
 
 void VFDHCS12SS59T::set_brightness(float brightness) {
