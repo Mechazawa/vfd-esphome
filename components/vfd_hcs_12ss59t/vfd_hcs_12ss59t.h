@@ -60,12 +60,12 @@ class VFDHCS12SS59T : public esphome::display::DisplayBuffer {
   void setup() override;
   void dump_config() override;
   void update() override;
-  void draw_absolute_pixel_internal(int x, int y, esphome::display::Color color) override;
-  int get_width() const override { return NUMDIGITS * 8; }  ///< 8 pixels per char
-  int get_height() const override { return 16; }            ///< 16 pixels high
+  void draw_absolute_pixel_internal(int x, int y, esphome::Color color) override;
+  int get_width() const { return NUMDIGITS * 8; }  ///< 8 pixels per char
+  int get_height() const { return 16; }            ///< 16 pixels high
   display::DisplayType get_display_type() override { return display::DisplayType(); }
-  int get_width_internal() const override { return get_width(); }
-  int get_height_internal() const override { return get_height(); }
+  int get_width_internal() override { return get_width(); }
+  int get_height_internal() override { return get_height(); }
 
   /**
    * @brief Set display brightness (0.0-1.0)
