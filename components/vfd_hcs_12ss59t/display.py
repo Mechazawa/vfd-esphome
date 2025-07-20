@@ -2,8 +2,8 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import display
 from esphome.const import CONF_ID
+from esphome.components import automation
 
-import voluptuous as vol
 try:
     from . import actions as vfd_actions
 except ImportError:
@@ -34,8 +34,8 @@ async def to_code(config):
     cg.add(var.set_brightness(config[CONF_BRIGHTNESS]))
 
 
+
 # --- Actions ---
-from esphome.components import automation
 
 @automation.register_action(
     "vfd_hcs_12ss59t.write",
