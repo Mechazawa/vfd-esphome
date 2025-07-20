@@ -84,5 +84,4 @@ display:
       auto t = id(sntp_time).now();
       snprintf(buf, sizeof(buf), "%02d:%02d:%02d", t.hour, t.minute, t.second);
       it.printf(0, 0, "%s", buf);
-      id(vfd_brightness).publish_state(x);
       id(vfd_display).set_brightness((uint8_t) (x * 255));
