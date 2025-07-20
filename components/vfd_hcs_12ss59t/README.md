@@ -8,3 +8,7 @@ ESPHome custom component for Samsung HCS-12SS59T VFD display.
 
 ## Usage
 Add to your ESPHome `custom_component` as described in the ESPHome docs.
+
+## Example device configuration
+
+See [`../../vfd_hcs_12ss59t_example.yaml`](../../vfd_hcs_12ss59t_example.yaml) for a complete example showing brightness control and time display.
