@@ -1,8 +1,7 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import display
+from esphome.components import display, automation
 from esphome.const import CONF_ID
-import esphome.components.automation as automation
 from . import actions as vfd_actions
 
 CODEOWNERS = ["@your-github-username"]
