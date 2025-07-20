@@ -3,112 +3,30 @@
 #include "VFD.h"
 // #include "TimerOne.h"
 
-VFD Vfd;
-
 SPISettings settingsA(SPIPARS);
 
-void VFD::init()
+VFD::VFD(int pinReset, int pinVdon, int pinCs)
+	: pin_reset(pinReset), pin_vdon(pinVdon), pin_cs(pinCs)
 {
-	pinMode(Pin_VFD_RESET, OUTPUT);
-	pinMode(Pin_VFD_CS, OUTPUT);
-
-	digitalWrite(Pin_VFD_RESET, HIGH);		// VFD _RESET OFF
-	digitalWrite(Pin_VFD_CS, HIGH);			//     _CS
-
-	for(int16_t i = 0; i < NUMDIGITS; i++)		// preset display buffer
-		buf[i] = ' ';						// with unused char
-
-	buf[NUMDIGITS] = '\0';					// terminate buffer
-
-	pinMode(Pin_VFD_VDON, OUTPUT);			// _VDON output
-	digitalWrite(Pin_VFD_VDON, HIGH);		// Vdisp OFF
-
-	supplyOn();								// supply on
-	SPI.begin();
-
-	digitalWrite(Pin_VFD_RESET, LOW);		// reset
-	delayMicroseconds(1);					// tWRES
-	digitalWrite(Pin_VFD_RESET, HIGH);
-	delayMicroseconds(1);					// tRSOFF
-
-	SPI.beginTransaction(settingsA);
-
-	sendCmd(VFD_NUMDIGIT, NUMDIGITS);		// number of digits
-	sendCmd(VFD_DUTY, 4);					// brightness 1..15
-	sendCmd(VFD_LIGHTS, LINORM);			// lights normal
-
-	SPI.endTransaction();
+	scrLen = NUMDIGITS;
+	scrPos = 0;
+	scrMode = 0;
+	for(int16_t i = 0; i < NUMDIGITS; i++)
+		buf[i] = ' ';
+	buf[NUMDIGITS] = '\0';
 }
 
-void VFD::supplyOn()
+void VFD::setPins(int pinReset, int pinVdon, int pinCs)
 {
-	digitalWrite(Pin_VFD_VDON, LOW);				// Vdisp ON
-
-	delay(1);
-}
-
-void VFD::supplyOff()
-{
-	digitalWrite(Pin_VFD_VDON, HIGH);					// Vdisp OFF
-
-	delay(1);
-}
-
-void VFD::write(const char* text)
-{
-	scrPos = NUMDIGITS-1;
-	size_t len = strlen(text);
-	strlcpy(buf, text, len = len > BUFSIZE ? BUFSIZE : len);
-	buf[BUFSIZE-1] = 0;
-	display();
-}
-
-void VFD::setBrightness(uint8_t brightness)
-{
-	SPI.beginTransaction(settingsA);
-	sendCmd(VFD_DUTY, brightness > 15 ? 15 : brightness);	// set brightness 0..15
-	SPI.endTransaction();
-}
-
-void doScroll()
-{
-	Vfd.display();
-
-	if(Vfd.scrMode > 0){
-		if(++Vfd.scrPos >= Vfd.scrLen)
-			Vfd.scrPos = 0;
-	}
-	else{
-		if(--Vfd.scrPos < 0)
-			Vfd.scrPos = Vfd.scrLen-1;
-	}
-}
-
-void VFD::scroll(int16_t mode)
-{
-	static bool tirat = false;
-
-	scrMode = mode;
-
-	doScroll();
-
-	// if(mode == 0){
-	// 	Timer1.detachInterrupt();
-	// }
-	// else{
-	// 	Timer1.initialize((uint32_t)abs(mode) * 10000);
-
-	// 	if(!tirat){
-	// 		Timer1.attachInterrupt(doScroll);
-	// 		tirat = true;
-	// 	}
-	// }
+	pin_reset = pinReset;
+	pin_vdon = pinVdon;
+	pin_cs = pinCs;
 }
 
 void VFD::display()
 {
 	SPI.beginTransaction(settingsA);
-	select(Pin_VFD_CS);
+	select(pin_cs);
 
 	sendCmdSeq(VFD_DCRAM_WR, 0);
 
@@ -121,7 +39,7 @@ void VFD::display()
 			p = scrLen-1;
 	}
 
-	deSelect(Pin_VFD_CS);
+	deSelect(pin_cs);
 	SPI.endTransaction();
 }
 
@@ -139,10 +57,10 @@ void VFD::deSelect(int pin)
 
 void VFD::sendCmd(char cmd, char arg)
 {
-	select(Pin_VFD_CS);					// select
+	select(pin_cs);					// select
 	SPI.transfer(cmd | arg);			// send command and argument
 	delayMicroseconds(8);				// 1/2 tCSH
-	deSelect(Pin_VFD_CS);				// deselect
+	deSelect(pin_cs);				// deselect
 }
 
 void VFD::sendCmdSeq(char cmd, char arg)

@@ -27,23 +27,12 @@
 #define NUMDIGITS			  12			// display digit width
 #define BUFSIZE				  100			// display/scroll buffer
 
-#if defined(ARDUINO_D1_MINI)
-const int Pin_VFD_RESET	=	5;			// VFD _RESET
-const int Pin_VFD_VDON	=	4;			//     _VDON Vdisp 0=ON 1=OFF
-const int Pin_VFD_CS	  =	SS;			//     _CS   chip select, SPI SS
-#else
-const int Pin_VFD_RESET	=	10;			// VFD _RESET
-const int Pin_VFD_VDON	=	8;			//     _VDON Vdisp 0=ON 1=OFF
-const int Pin_VFD_CS	  =	SS;			//     _CS   chip select, SPI SS
-#endif
-
 class VFD
 {
 public:
-	int16_t scrLen;
-	int16_t scrPos;
-	int16_t scrMode;
+	VFD(int pinReset = 5, int pinVdon = 4, int pinCs = 15);
 
+	void setPins(int pinReset, int pinVdon, int pinCs);
 	void init();
 	void supplyOn();
 	void supplyOff();
@@ -56,6 +45,12 @@ protected:
 
 private:
 	char buf[BUFSIZE];
+	int pin_reset;
+	int pin_vdon;
+	int pin_cs;
+	int16_t scrLen;
+	int16_t scrPos;
+	int16_t scrMode;
 
 	void select(int pin);
 	void deSelect(int pin);
@@ -65,6 +60,6 @@ private:
 	char getCode(char c);
 };
 
-extern VFD Vfd;
+
 
 #endif
