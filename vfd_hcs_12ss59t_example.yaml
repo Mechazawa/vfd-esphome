@@ -1,7 +1,5 @@
 esphome:
   name: vfd_clock
-
-      - lambda: |-
   board: esp32dev
 
 external_components:
