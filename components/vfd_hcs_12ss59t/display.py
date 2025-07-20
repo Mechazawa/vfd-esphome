@@ -2,12 +2,8 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import display
 from esphome.const import CONF_ID
-from esphome.components import automation
-
-try:
-    from . import actions as vfd_actions
-except ImportError:
-    import actions as vfd_actions
+import esphome.components.automation as automation
+from . import actions as vfd_actions
 
 CODEOWNERS = ["@your-github-username"]
 DEPENDENCIES = ["spi"]
