@@ -1,0 +1,31 @@
+network:
+esphome:
+  name: vfd_test
+
+esp32:
+  board: esp32dev
+
+external_components:
+  - source: ../components
+    components: [vfd_hcs_12ss59t]
+
+spi:
+  clk_pin: GPIO18
+  mosi_pin: GPIO23
+
+time:
+  - platform: sntp
+    id: sntp_time
+
+display:
+  - platform: vfd_hcs_12ss59t
+    id: vfd_display
+    pin_reset: 5
+    pin_vdon: 4
+    pin_cs: 15
+    brightness: 80%
+    lambda: |-
+      char buf[13];
+      auto t = id(sntp_time).now();
+      snprintf(buf, sizeof(buf), "%02d:%02d:%02d", t.hour, t.minute, t.second);
+      it.printf(0, 0, "%s", buf);
