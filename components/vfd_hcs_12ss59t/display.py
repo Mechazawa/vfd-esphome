@@ -1,7 +1,13 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import display, spi
+from esphome.components import display
 from esphome.const import CONF_ID
+
+import voluptuous as vol
+try:
+    from . import actions as vfd_actions
+except ImportError:
+    import actions as vfd_actions
 
 CODEOWNERS = ["@your-github-username"]
 DEPENDENCIES = ["spi"]
@@ -26,3 +32,23 @@ async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID], config[CONF_PIN_RESET], config[CONF_PIN_VDON], config[CONF_PIN_CS])
     await display.register_display(var, config)
     cg.add(var.set_brightness(config[CONF_BRIGHTNESS]))
+
+
+# --- Actions ---
+from esphome.components import automation
+
+@automation.register_action(
+    "vfd_hcs_12ss59t.write",
+    vfd_actions.VFD_WRITE_ACTION_SCHEMA,
+    vfd_actions.to_code_write_action,
+)
+def vfd_write_action_to_code(config, action_id, template_arg, args):
+    return vfd_actions.to_code_write_action(config, action_id)
+
+@automation.register_action(
+    "vfd_hcs_12ss59t.clear",
+    vfd_actions.VFD_CLEAR_ACTION_SCHEMA,
+    vfd_actions.to_code_clear_action,
+)
+def vfd_clear_action_to_code(config, action_id, template_arg, args):
+    return vfd_actions.to_code_clear_action(config, action_id)

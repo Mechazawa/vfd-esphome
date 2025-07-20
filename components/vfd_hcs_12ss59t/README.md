@@ -41,4 +41,16 @@ display:
       auto t = id(sntp_time).now();
       snprintf(buf, sizeof(buf), "%02d:%02d:%02d", t.hour, t.minute, t.second);
       it.printf(0, 0, "%s", buf);
+
+# Example: Write and clear actions
+
+script:
+  - id: vfd_demo_script
+    then:
+      - vfd_hcs_12ss59t.write:
+          id: vfd_display
+          text: "Hello World!"
+      - delay: 2s
+      - vfd_hcs_12ss59t.clear:
+          id: vfd_display
 ```

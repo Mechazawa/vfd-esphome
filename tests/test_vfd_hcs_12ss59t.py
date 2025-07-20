@@ -1,5 +1,5 @@
-import esphome.config_validation as cv
 import pytest
+import esphome.config_validation as cv
 from esphome.components import vfd_hcs_12ss59t
 from esphome.yaml_util import dump_config
 
