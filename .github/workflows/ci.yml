@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
   schedule:
     - cron: '0 7 * * *'  # Every day at 07:00 UTC
@@ -30,4 +30,4 @@ jobs:
         uses: esphome/build-action@v7
         with:
           version: ${{ matrix.esphome-version }}
-          yaml-file: test_empty_components.yaml
+          yaml-file: tests/test.esp8266.yaml

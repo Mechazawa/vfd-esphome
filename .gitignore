@@ -145,3 +145,6 @@ sdkconfig.*
 **/src/
 **/platformio.ini
 /secrets.yaml
+
+# ESPHome build output
+.esphome/
